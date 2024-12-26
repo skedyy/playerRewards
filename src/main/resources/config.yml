@@ -1,0 +1,8 @@
+prefix: '[playerRewards]'
+databaseVersion: 1.0
+pluginVersion: 1.0
+daysCycle: 10
+competitionWinners: 3
+
+messages:
+  cycle-finished: 'The most played competition has finished, click here to show the results.'
