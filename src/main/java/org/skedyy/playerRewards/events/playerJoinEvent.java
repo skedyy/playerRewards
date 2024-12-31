@@ -49,7 +49,7 @@ public class playerJoinEvent implements Listener {
                 });
             }
         }else{
-            chatUtils.sendClickableCommand(player,ChatColor.GOLD+pluginPrefix+" "+globalMessages.cycleFinished,"playerrewards results");
+            chatUtils.sendClickableCommand(player,ChatColor.translateAlternateColorCodes('&',pluginPrefix+" "+globalMessages.cycleFinished), "playerrewards results");
         }
     }
 }

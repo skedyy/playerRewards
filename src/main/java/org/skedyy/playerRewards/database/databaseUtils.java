@@ -22,14 +22,13 @@ public class databaseUtils {
                         "createdAt INT NOT NULL DEFAULT "+System.currentTimeMillis()+","+
                         "pluginVersion FLOAT NOT NULL DEFAULT "+pluginVersion+","+
                         "cycleStart INT NOT NULL DEFAULT "+System.currentTimeMillis()+")");
-                statement.execute("INSERT INTO playerRewards_metadata (databaseVersion, createdAt, pluginVersion, cycleStart) VALUES ("+databaseVersion+","+System.currentTimeMillis()+","+pluginVersion+","+System.currentTimeMillis()+");");
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
             try{
                 var prepstatement = connection.prepareStatement("SELECT * FROM playerRewards_metadata");
                 var resultSet = prepstatement.executeQuery();
-                if (resultSet.getRow() == 0) {
+                if (!resultSet.next()) {
                     resultSet.close();
                     var preparedstatement = connection.prepareStatement("INSERT INTO playerRewards_metadata (databaseVersion, createdAt, pluginVersion, cycleStart) VALUES ("+databaseVersion+","+System.currentTimeMillis()+","+pluginVersion+","+System.currentTimeMillis()+");");
                     preparedstatement.executeUpdate();
@@ -212,11 +211,14 @@ public class databaseUtils {
                 for (int i = 0; i < arrUuids.length; i++) {
                     resultArray[0][i] = arrUuids[i];
                 }
-                return resultArray;
+                if(arrResults.length >=1 || arrUuids.length >= 1){
+                    return resultArray;
+                }
 
             }catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+            return null;
         }
         public void closeConnection() throws SQLException {
             if (connection != null && !connection.isClosed()) {

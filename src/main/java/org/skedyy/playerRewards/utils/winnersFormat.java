@@ -20,7 +20,6 @@ public class winnersFormat {
 
     public long convertTimeUnit(int millis){
         var timeFormat = globalVars.winnersTimeFormat;
-        globalVars.server.getConsoleSender().sendMessage(ChatColor.GOLD+"[playerRewards] timeFormat: "+timeFormat);
         return switch (timeFormat) {
             case "hours" -> TimeUnit.HOURS.convert(millis, TimeUnit.MILLISECONDS);
             case "days" -> TimeUnit.DAYS.convert(millis, TimeUnit.MILLISECONDS);

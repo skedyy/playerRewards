@@ -1,5 +1,5 @@
 #The prefix only the players messages.
-prefix: '[playerRewards]'
+prefix: "&6[playerRewards]"
 #The duration on days for the competition.
 daysCycle: 10
 #The winners showed on the competition results.
@@ -9,7 +9,8 @@ competitionWinners: 3
 winners-TimeFormat: "hours"
 messages:
   #Message for the most-played competition finish.
-  cycle-finished: 'The most played competition has finished, click here to show the results.'
+  cycle-finished: "The most played competition has finished, click here to show the results."
+  database-empty: "There's not enough data to display the results still, try later!"
 
 
 
