@@ -2,10 +2,8 @@ package org.skedyy.playerRewards.database;
 
 import org.bukkit.entity.Player;
 import org.skedyy.playerRewards.utils.globalVars;
-
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class databaseUtils {
     public static class DatabaseManager {
@@ -25,6 +23,17 @@ public class databaseUtils {
                         "pluginVersion FLOAT NOT NULL DEFAULT "+pluginVersion+","+
                         "cycleStart INT NOT NULL DEFAULT "+System.currentTimeMillis()+")");
                 statement.execute("INSERT INTO playerRewards_metadata (databaseVersion, createdAt, pluginVersion, cycleStart) VALUES ("+databaseVersion+","+System.currentTimeMillis()+","+pluginVersion+","+System.currentTimeMillis()+");");
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            try{
+                var prepstatement = connection.prepareStatement("SELECT * FROM playerRewards_metadata");
+                var resultSet = prepstatement.executeQuery();
+                if (resultSet.getRow() == 0) {
+                    resultSet.close();
+                    var preparedstatement = connection.prepareStatement("INSERT INTO playerRewards_metadata (databaseVersion, createdAt, pluginVersion, cycleStart) VALUES ("+databaseVersion+","+System.currentTimeMillis()+","+pluginVersion+","+System.currentTimeMillis()+");");
+                    preparedstatement.executeUpdate();
+                }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -183,20 +192,20 @@ public class databaseUtils {
             }
             return null;
         }
-        public String[][] getResults() throws SQLException{
-            try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM players ORDER BY playedTime DESC LIMIT ?")) {
+        public String[][] getResults() {
+            try {
+                PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM players ORDER BY playedTime DESC LIMIT ?");
                 preparedStatement.setInt(1, globalVars.competitionWinnners );
                 var resultSet = preparedStatement.executeQuery();
                 ArrayList<String> results = new ArrayList<>();
                 ArrayList<String> uuids = new ArrayList<>();
                 while (resultSet.next()) {
-                    var intString = resultSet.getInt(1);
-                    results.add(Integer.toString(intString));
+                    results.add(resultSet.getString(1));
                     uuids.add(resultSet.getString(2));
                 }
                 var arrResults = results.toArray(String[]::new);
                 var arrUuids = uuids.toArray(String[]::new);
-                String[][] resultArray = {{},{}};
+                String[][] resultArray = {{""},{""}};
                 for (int i = 0; i < arrResults.length; i++) {
                     resultArray[1][i] = arrResults[i];
                 }

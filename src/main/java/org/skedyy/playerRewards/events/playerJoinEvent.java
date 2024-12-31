@@ -27,6 +27,7 @@ public class playerJoinEvent implements Listener {
         var cycleTracker = new cycleTracker();
         var chatUtils = new chatUtils();
         var plugin = globalVars.plugin;
+        var server = globalVars.server;
         var config = globalVars.config;
         var playersFolder = globalVars.playersFolder;
         var pluginPrefix = globalVars.pluginPrefix;
@@ -48,7 +49,7 @@ public class playerJoinEvent implements Listener {
                 });
             }
         }else{
-            chatUtils.sendClickableCommand(player,ChatColor.GOLD+pluginPrefix+" "+globalMessages.cycleFinished,"/playerRewards results");
+            chatUtils.sendClickableCommand(player,ChatColor.GOLD+pluginPrefix+" "+globalMessages.cycleFinished,"playerrewards results");
         }
     }
 }

@@ -1,8 +1,28 @@
+#The prefix only the players messages.
 prefix: '[playerRewards]'
+#The duration on days for the competition.
+daysCycle: 10
+#The winners showed on the competition results.
+competitionWinners: 3
+#The time format for the most-played on the results.
+#This option only accepts "days", "hours", "minutes".
+winners-TimeFormat: "hours"
+messages:
+  #Message for the most-played competition finish.
+  cycle-finished: 'The most played competition has finished, click here to show the results.'
+
+
+
+
+
+
+
+
+
+
+
+
+
+#DO NOT MODIFY THESE VALUES
 databaseVersion: 1.0
 pluginVersion: 1.0
-daysCycle: 10
-competitionWinners: 3
-
-messages:
-  cycle-finished: 'The most played competition has finished, click here to show the results.'

@@ -1,14 +1,14 @@
-name: PlayerRewards
+name: playerRewards
 version: '1.0-SNAPSHOT'
 main: org.skedyy.playerRewards.Main
 api-version: '1.21'
 load: STARTUP
 commands:
-  playerRewards:
+  playerrewards:
     description: 'The main command, without arguments displays the plugin help.'
-    usage: /<playerRewards>
-    permission: playerRewards.help
-  results:
-    description: 'Shows the actual competition results'
-    usage: /<playerRewards> results
-    permission: playerRewards.results
+    usage: /<playerrewards>
+    permission: playerrewards.help
+  playerrewards results:
+    description: 'Displays the results from the actual competition.'
+    usage: /<playerrewards> results
+    permission: playerrewards.results

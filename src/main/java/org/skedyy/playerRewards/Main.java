@@ -3,6 +3,7 @@ package org.skedyy.playerRewards;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.skedyy.playerRewards.commands.competitionResults;
 import org.skedyy.playerRewards.commands.playerRewards;
 import org.skedyy.playerRewards.database.databaseUtils;
 import org.skedyy.playerRewards.events.playerJoinEvent;
@@ -19,49 +20,55 @@ public final class Main extends JavaPlugin {
     private globalMessages globalMessages;
     @Override
     public void onEnable() {
-        // Check for dataFolder
-        globalVariables = new globalVars(getServer(),this,getConfig(),databaseManager);
+        // Create globalVars and globalMessagesclasses
+        globalVariables = new globalVars(getServer(),this,getConfig(),databaseManager,Bukkit.getPluginManager());
         globalMessages = new globalMessages(getConfig());
         var server = getServer();
         server.getConsoleSender().sendMessage(ChatColor.GOLD + "[playerRewards]"+ChatColor.GREEN+" Starting the rewards!");
+
+        //Checks for existent data
         var dataFolder = getDataFolder();
         var database = new File(getDataFolder().getAbsolutePath() + "/database/players.db");
         if (dataFolder.exists()&&database.exists()) {
             server.getConsoleSender().sendMessage(ChatColor.GOLD + "[playerRewards] Loading already existent data");
-        } else {
+        }
+
+        //If data doesn't exists
+        else {
             server.getConsoleSender().sendMessage(ChatColor.GOLD + "[playerRewards]"+ChatColor.GREEN+" Creating new data folder...");
-            dataFolder.mkdir();
-            var playersFolder = new File(dataFolder+"/players");
-            var databaseFolder = new File(dataFolder+"/database");
-            playersFolder.mkdir();
-            databaseFolder.mkdir();
-            saveDefaultConfig();
-            try {
-                var databaseVersion = getConfig().getDouble("databaseVersion");
-                var pluginVersion = getConfig().getDouble("pluginVersion");
-                databaseManager = new databaseUtils.DatabaseManager(getDataFolder().getAbsolutePath() + "/database/players.db",databaseVersion,pluginVersion,globalVariables);
-            } catch (SQLException e) {
+            try{
+                dataFolder.mkdir();
+                var playersFolder = new File(dataFolder+"/players");
+                var databaseFolder = new File(dataFolder+"/database");
+                playersFolder.mkdir();
+                databaseFolder.mkdir();
+            }
+            catch (SecurityException e) {
                 e.printStackTrace();
-                // Disable the plugin if the database connection fails, because we don't want enabled plugin with no functionality.
-                server.getConsoleSender().sendMessage(ChatColor.GOLD+"[playerRewards]"+ChatColor.RED+" Error creating the database!");
+                server.getConsoleSender().sendMessage(ChatColor.GOLD+"[playerRewards]"+ChatColor.RED+" Error creating the folders, check for permissions!");
                 Bukkit.getPluginManager().disablePlugin(this);
             }
+            saveDefaultConfig();
         }
+
+        //Database creation/connection
         try {
             var databaseVersion = getConfig().getDouble("databaseVersion");
             var pluginVersion = getConfig().getDouble("pluginVersion");
             databaseManager = new databaseUtils.DatabaseManager(getDataFolder().getAbsolutePath() + "/database/players.db",databaseVersion,pluginVersion,globalVariables);
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             e.printStackTrace();
-            // Disable the plugin if the database connection fails, because we don't want enabled plugin with no functionality.
             server.getConsoleSender().sendMessage(ChatColor.GOLD+"[playerRewards]"+ChatColor.RED+" Error connecting to the database!");
             Bukkit.getPluginManager().disablePlugin(this);
         }
+
         //Registering event(s)
         server.getPluginManager().registerEvents(new playerJoinEvent(databaseManager,globalVariables,globalMessages), this);
         server.getPluginManager().registerEvents(new playerQuitEvent(databaseManager,globalVariables), this);
+
         //Registering command(s)
-        this.getCommand("playerRewards").setExecutor(new playerRewards(globalVariables,databaseManager));
+        this.getCommand("playerrewards").setExecutor(new playerRewards(globalVariables,databaseManager));
     }
 
     @Override
@@ -69,13 +76,14 @@ public final class Main extends JavaPlugin {
         // Plugin shutdown logic
         var server = getServer();
         server.getConsoleSender().sendMessage(ChatColor.GOLD + "[playerRewards] The rewards are gone :(");
-        server.getConsoleSender().sendMessage(ChatColor.GOLD+"[playerRewards]"+ChatColor.RED+" Please check the console for errors!");
+        server.getConsoleSender().sendMessage(ChatColor.GOLD + "[playerRewards]" + ChatColor.RED + " Please check the console for errors!");
         try {
             // Close the database connection when the plugin is disabled
             if (databaseManager != null) {
                 databaseManager.closeConnection();
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             e.printStackTrace();
         }
     }

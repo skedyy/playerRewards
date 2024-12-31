@@ -2,6 +2,7 @@ package org.skedyy.playerRewards.utils;
 
 import org.bukkit.Server;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.PluginManager;
 import org.skedyy.playerRewards.Main;
 import org.skedyy.playerRewards.database.databaseUtils;
 import java.io.File;
@@ -18,7 +19,9 @@ public class globalVars {
     public final String pluginVersion;
     public final Integer daysCycle;
     public final Integer competitionWinnners;
-    public globalVars(Server server, Main plugin, FileConfiguration config, databaseUtils.DatabaseManager databaseManager) {
+    public final String winnersTimeFormat;
+    public final PluginManager pluginManager;
+    public globalVars(Server server, Main plugin, FileConfiguration config, databaseUtils.DatabaseManager databaseManager, PluginManager pluginManager) {
         this.server = server;
         this.plugin = plugin;
         this.config = config;
@@ -28,5 +31,7 @@ public class globalVars {
         this.pluginVersion = config.getString("pluginVersion");
         this.daysCycle = config.getInt("daysCycle");
         this.competitionWinnners = config.getInt("competitionWinners");
+        this.winnersTimeFormat = config.getString("winners-TimeFormat");
+        this.pluginManager = pluginManager;
     }
 }

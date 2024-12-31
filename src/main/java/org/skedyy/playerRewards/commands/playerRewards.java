@@ -9,6 +9,7 @@ import org.skedyy.playerRewards.database.databaseUtils;
 import org.skedyy.playerRewards.utils.globalVars;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -26,38 +27,30 @@ public class playerRewards implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player player) {
-            if(args.length == 0){
+            if(args.length == 0) {
                 //Display help command
-                if(sender.hasPermission("playerRewards.help")){
-                    sender.sendMessage(globalVars.pluginPrefix+" "+ ChatColor.GREEN+"/playerRewards results "+ChatColor.GOLD+"Show the actual competition leaderboard. ");
+                if (sender.hasPermission("playerrewards.help")) {
+                    sender.sendMessage(globalVars.pluginPrefix + " " + ChatColor.GREEN + "/playerRewards results " + ChatColor.GOLD + "Show the actual competition leaderboard. ");
                 }
-            }else{
+            } else if (args.length == 1) {
+                globalVars.server.getConsoleSender().sendMessage(ChatColor.GOLD+"[playerRewards] args array complete"+ Arrays.toString(args));
                 switch (args[0]){
-                    //Display results
                     case "results":
-                        if(sender.hasPermission("playerRewards.results")){
-                            try {
-                                var resultsArr = databaseManager.getResults();
-                                String[] winnersArray;
-                                for (int i = 0; i < resultsArr.length; ++i) {
-                                    for (int j = 0; j < resultsArr[i].length; ++j) {
-                                        System.out.println(resultsArr[i][j]);
-                                        var winnerName = Bukkit.getOfflinePlayer(UUID.fromString(resultsArr[1][j])).getName();
-                                        var winnerTime = resultsArr[0][j];
-                                        var winnerDays = TimeUnit.MILLISECONDS.toDays(Integer.parseInt(winnerTime));
-                                        sender.sendMessage(globalVars.pluginPrefix+" "+ ChatColor.GOLD+j+"st  "+winnerName+" Has played for "+winnerDays+" days.");
-                                    }
-                                }
-                            } catch (SQLException e) {
-                                throw new RuntimeException(e);
-                            }
+                        if (sender.hasPermission("playerrewards.results")) {
+                            var compResults = new competitionResults(globalVars,databaseManager);
+                            compResults.results(sender,command,label,args);
+                        }else{
+                            globalVars.server.getConsoleSender().sendMessage(ChatColor.GOLD+"[playerRewards] player doesnt have permission.");
                         }
-                        break;
+                    break;
+                    default:
+                        if (sender.hasPermission("playerrewards.help")) {
+                            sender.sendMessage(globalVars.pluginPrefix + " " + ChatColor.GREEN + "/playerRewards results " + ChatColor.GOLD + "Show the actual competition leaderboard. ");
+                        }
+                    break;
                 }
             }
         }
-
-        // If the player (or console) uses our command correct, we can return true
         return true;
     }
 }
